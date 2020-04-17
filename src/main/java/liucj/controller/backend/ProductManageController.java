@@ -1,21 +1,27 @@
 package liucj.controller.backend;
 
+import com.google.common.collect.Maps;
 import liucj.common.Const;
 import liucj.common.ResponseCode;
 import liucj.common.ServerResponse;
 import liucj.pojo.Product;
 import liucj.pojo.User;
+import liucj.service.IFileService;
 import liucj.service.IProductService;
 import liucj.service.IUserService;
+import liucj.utils.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/manage/product")
@@ -24,6 +30,8 @@ public class ProductManageController {
     private IProductService iProductService;
     @Autowired
     private IUserService iUserService;
+    @Autowired
+    private IFileService iFileService;
 
     /**
      * 商品保存
@@ -67,5 +75,25 @@ public class ProductManageController {
         } else {
             return ServerResponse.createByErrorMessage("无权限操作");
         }
+    }
+
+    /**
+     * 上传图片
+     * @param session
+     * @param file
+     * @param request
+     * @return
+     */
+    @RequestMapping("upload.do")
+    @ResponseBody
+    public ServerResponse upload(HttpSession session, @RequestParam(value = "upload_file",required = false) MultipartFile file, HttpServletRequest request){
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String targetFileName = iFileService.upload(file,path);
+        String url = PropertiesUtil.getProperty("ftp.server.http.prefix")+targetFileName;
+
+        Map fileMap = Maps.newHashMap();
+        fileMap.put("uri",targetFileName);
+        fileMap.put("url",url);
+        return ServerResponse.createBySuccess(fileMap);
     }
 }
