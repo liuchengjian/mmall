@@ -1,0 +1,71 @@
+package liucj.controller.backend;
+
+import liucj.common.Const;
+import liucj.common.ResponseCode;
+import liucj.common.ServerResponse;
+import liucj.pojo.Product;
+import liucj.pojo.User;
+import liucj.service.IProductService;
+import liucj.service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpSession;
+import java.util.Date;
+
+@Controller
+@RequestMapping("/manage/product")
+public class ProductManageController {
+    @Autowired
+    private IProductService iProductService;
+    @Autowired
+    private IUserService iUserService;
+
+    /**
+     * 商品保存
+     * @param session
+     * @param product
+     * @return
+     */
+    @RequestMapping(value = "save.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse productSave(HttpSession session, Product product){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"用户未登录,请登录管理员");
+        }
+        if(iUserService.checkAdminRole(user).isSuccess()){
+            //填充我们增加产品的业务逻辑
+            return iProductService.saveOrUpdateProduct(product);
+        }else{
+            return ServerResponse.createByErrorMessage("无权限操作");
+        }
+    }
+
+    /**
+     * 获取商品列表
+     *
+     * @param session
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @RequestMapping("list.do")
+    @ResponseBody
+    public ServerResponse getList(HttpSession session, @RequestParam(value = "pageNum", defaultValue = "1") int pageNum, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用户未登录,请登录管理员");
+        }
+        if (iUserService.checkAdminRole(user).isSuccess()) {
+            //填充业务
+            return iProductService.getProductList(pageNum, pageSize);
+        } else {
+            return ServerResponse.createByErrorMessage("无权限操作");
+        }
+    }
+}
