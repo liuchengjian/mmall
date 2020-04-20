@@ -5,7 +5,6 @@ import liucj.common.ResponseCode;
 import liucj.common.ServerResponse;
 import liucj.pojo.User;
 import liucj.service.ICategoryService;
-import liucj.service.IProductService;
 import liucj.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
