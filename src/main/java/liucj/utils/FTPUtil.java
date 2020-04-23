@@ -35,7 +35,7 @@ public class FTPUtil {
     }
 
 
-    private boolean uploadFile(String remotePath,List<File> fileList) throws IOException {
+    private boolean uploadFile(String remotePath, List<File> fileList) throws IOException {
         boolean uploaded = true;
         FileInputStream fis = null;
         //连接FTP服务器
@@ -65,7 +65,7 @@ public class FTPUtil {
 
 
 
-    private boolean connectServer(String ip,int port,String user,String pwd){
+    private boolean connectServer(String ip, int port, String user, String pwd){
 
         boolean isSuccess = false;
         ftpClient = new FTPClient();
@@ -77,14 +77,6 @@ public class FTPUtil {
         }
         return isSuccess;
     }
-
-
-
-
-
-
-
-
 
 
 
