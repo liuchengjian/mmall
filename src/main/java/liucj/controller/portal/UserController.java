@@ -54,14 +54,15 @@ public class UserController {
 
     /**
      * 获取用户信息
+     *
      * @param session
      * @return
      */
-    @RequestMapping(value = "get_user_info",method = RequestMethod.POST)
+    @RequestMapping(value = "get_user_info", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> getUserInfo(HttpSession session){
+    public ServerResponse<User> getUserInfo(HttpSession session) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if(user!=null){
+        if (user != null) {
             return ServerResponse.createBySuccess(user);
         }
         return ServerResponse.createBySuccessMessage("用户未登陆，无法获取当前用户信息");
