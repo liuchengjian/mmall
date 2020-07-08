@@ -1,16 +1,23 @@
 package liucj.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import liucj.common.Const;
 import liucj.common.ServerResponse;
 import liucj.dao.UserMapper;
+import liucj.pojo.Product;
 import liucj.pojo.User;
 import liucj.service.IUserService;
 import liucj.utils.MD5Util;
+import liucj.vo.ProductListVo;
+import liucj.vo.UserVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 用户实现类
@@ -96,6 +103,32 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();
+    }
+
+    @Override
+    public ServerResponse list(int pageNum, int pageSize) {
+        //startPage--start
+        PageHelper.startPage(pageNum, pageSize);
+        //填充自己的sql查询逻辑
+        List<User>userList = userMapper.selectList();
+        List<UserVo>userVoList = Lists.newArrayList();
+        for(User user:userList){
+            userVoList.add(new UserVo(
+                    user.getId(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getPhone(),
+                    user.getQuestion(),
+                    user.getAnswer(),
+                    user.getRole(),
+                    user.getCreateTime(),
+                    user.getUpdateTime()
+                    ));
+        }
+        //pageHelper-收尾
+        PageInfo pageResult = new PageInfo(userList);
+        pageResult.setList(userVoList);
+        return ServerResponse.createBySuccess(pageResult);
     }
 
     /**

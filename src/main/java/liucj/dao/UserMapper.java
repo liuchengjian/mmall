@@ -3,6 +3,8 @@ package liucj.dao;
 import liucj.pojo.User;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface UserMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -24,4 +26,6 @@ public interface UserMapper {
 
     //登录
     User selectLogin(@Param("username") String username, @Param("password") String password);
+    //用户列表
+    List<User> selectList();
 }

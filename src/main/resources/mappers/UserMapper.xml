@@ -166,4 +166,11 @@
     where username = #{username}
     and password = #{password}
   </select>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from mmall_user
+    ORDER BY id asc
+  </select>
 </mapper>
