@@ -50,5 +50,5 @@ public interface IProductService {
      * @return
      */
     ServerResponse<PageInfo> searchProduct(String productName,Integer productId,int pageNum,int pageSize);
-
+    ServerResponse<ProductDetailVo> manageProductDetail(Integer productId);
 }
