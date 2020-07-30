@@ -51,4 +51,6 @@ public interface IProductService {
      */
     ServerResponse<PageInfo> searchProduct(String productName,Integer productId,int pageNum,int pageSize);
     ServerResponse<ProductDetailVo> manageProductDetail(Integer productId);
+
+    ServerResponse<Integer> getProductListCount();
 }

@@ -20,4 +20,7 @@ public interface IUserService {
     ServerResponse list( @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
                          @RequestParam(value = "pageSize",defaultValue = "10") int pageSize);
 
+    ServerResponse<Integer> listUserCount();
+
+
 }

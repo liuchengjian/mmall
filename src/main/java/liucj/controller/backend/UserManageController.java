@@ -2,7 +2,10 @@ package liucj.controller.backend;
 
 import liucj.common.Const;
 import liucj.common.ServerResponse;
+import liucj.pojo.ListCount;
 import liucj.pojo.User;
+import liucj.service.IOrderService;
+import liucj.service.IProductService;
 import liucj.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +22,10 @@ public class UserManageController {
 
     @Autowired
     private IUserService iUserService;
+    @Autowired
+    private IProductService iProductService;
+    @Autowired
+    private IOrderService iOrderService;
 
     @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody
@@ -46,6 +53,32 @@ public class UserManageController {
             return ServerResponse.createBySuccess(response.getData());
         }
         return ServerResponse.createByErrorMessage("获取用户数据错误");
+    }
+
+
+    @RequestMapping(value = "listCount.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<ListCount> listCount() {
+        ListCount listCount = new ListCount();
+        ServerResponse<Integer> userResponse  = iUserService.listUserCount();
+        ServerResponse<Integer> productResponse  = iProductService.getProductListCount();
+        ServerResponse<Integer> orderResponse  = iOrderService.manageListCount();
+        if (userResponse.isSuccess()) {
+            listCount.setUserCount(userResponse.getData());
+        }else {
+            listCount.setUserCount(0);
+        }
+        if (productResponse.isSuccess()) {
+            listCount.setProductCount(productResponse.getData());
+        }else {
+            listCount.setProductCount(0);
+        }
+        if (orderResponse.isSuccess()) {
+            listCount.setOrderCount(orderResponse.getData());
+        }else {
+            listCount.setOrderCount(0);
+        }
+        return ServerResponse.createBySuccess(listCount);
     }
 
 

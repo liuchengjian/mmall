@@ -214,6 +214,13 @@ public class OrderServiceImpl implements IOrderService {
         return ServerResponse.createBySuccess(pageResult);
     }
 
+    @Override
+    public ServerResponse<Integer> manageListCount() {
+        List<Order> orderList = orderMapper.selectAllOrder();
+        return ServerResponse.createBySuccess(orderList.size());
+    }
+
+
     /**
      * 后台订单详情
      *

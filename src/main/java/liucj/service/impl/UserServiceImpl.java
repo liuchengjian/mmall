@@ -136,8 +136,8 @@ public class UserServiceImpl implements IUserService {
         PageHelper.startPage(pageNum, pageSize);
         //填充自己的sql查询逻辑
         List<User> userList = userMapper.selectList();
-        List<UserVo1>userVoList = Lists.newArrayList();
-        for(User user:userList){
+        List<UserVo1> userVoList = Lists.newArrayList();
+        for (User user : userList) {
             userVoList.add(new UserVo1(
                     user.getId(),
                     user.getUsername(),
@@ -154,6 +154,12 @@ public class UserServiceImpl implements IUserService {
         PageInfo pageResult = new PageInfo(userList);
         pageResult.setList(userVoList);
         return ServerResponse.createBySuccess(pageResult);
+    }
+
+    @Override
+    public ServerResponse listUserCount() {
+        List<User> userList = userMapper.selectList();
+        return ServerResponse.createBySuccess(userList.size());
     }
 
 }

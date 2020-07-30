@@ -75,20 +75,21 @@ public class ProductServiceImpl implements IProductService {
 
     /**
      * 更新状态
+     *
      * @param productId
      * @param status
      * @return
      */
     @Override
     public ServerResponse<String> setSaleStatus(Integer productId, Integer status) {
-        if(productId == null || status == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+        if (productId == null || status == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
         Product product = new Product();
         product.setId(productId);
         product.setStatus(status);
         int rowCount = productMapper.updateByPrimaryKeySelective(product);
-        if(rowCount > 0){
+        if (rowCount > 0) {
             return ServerResponse.createBySuccess("修改产品销售状态成功");
         }
         return ServerResponse.createByErrorMessage("修改产品销售状态失败");
@@ -96,14 +97,14 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ServerResponse<ProductDetailVo> getProductDetail(Integer productId) {
-        if(productId == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+        if (productId == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
         Product product = productMapper.selectByPrimaryKey(productId);
-        if(product == null){
+        if (product == null) {
             return ServerResponse.createByErrorMessage("产品已下架或者删除");
         }
-        if(product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()){
+        if (product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()) {
             return ServerResponse.createByErrorMessage("产品已下架或者删除");
         }
         ProductDetailVo productDetailVo = assembleProductDetailVo(product);
@@ -112,6 +113,7 @@ public class ProductServiceImpl implements IProductService {
 
     /**
      * ProductDetail->ProductDetailVo
+     *
      * @param product
      * @return
      */
@@ -128,11 +130,11 @@ public class ProductServiceImpl implements IProductService {
         productDetailVo.setStatus(product.getStatus());
         productDetailVo.setStock(product.getStock());
         //调用配置文件里的
-        productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix","http://img.happymmall.com/"));
+        productDetailVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix", "http://img.happymmall.com/"));
         Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
-        if(category == null){
+        if (category == null) {
             productDetailVo.setParentCategoryId(0);//默认根节点
-        }else{
+        } else {
             productDetailVo.setParentCategoryId(category.getParentId());
         }
 
@@ -219,6 +221,13 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.createBySuccess(pageResult);
     }
 
+    @Override
+    public ServerResponse<Integer> getProductListCount() {
+        List<Product> productList = productMapper.selectList();
+        return ServerResponse.createBySuccess(productList.size());
+    }
+
+
     /**
      * 商品搜索
      *
@@ -244,13 +253,14 @@ public class ProductServiceImpl implements IProductService {
         pageResult.setList(productListVoList);
         return ServerResponse.createBySuccess(pageResult);
     }
+
     @Override
     public ServerResponse<ProductDetailVo> manageProductDetail(Integer productId) {
-        if(productId == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+        if (productId == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
         Product product = productMapper.selectByPrimaryKey(productId);
-        if(product == null){
+        if (product == null) {
             return ServerResponse.createByErrorMessage("产品已下架或者删除");
         }
         ProductDetailVo productDetailVo = assembleProductDetailVo(product);
