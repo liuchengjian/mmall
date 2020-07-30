@@ -17,4 +17,7 @@ public interface ICategoryService {
 
     //递归分类子节点
     ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId);
+
+    //更新品类名称
+    ServerResponse updateCategoryName(Integer categoryId,String categoryName);
 }
